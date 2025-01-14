@@ -16,31 +16,30 @@
         <Column field="email" header="Email" />
         <Column field="age" header="Yosh" />
         <Column header="Amallar">
-  <template>
-    <Button label="Yangilash" class="p-button-warning"/>
-    <Button label="O'chirish" class="p-button-danger"/>
-  </template>
-</Column>
-
+          <template #body="{ data, index }">
+            <Button label="Yangilash" class="p-button-warning" />
+            <Button label="O'chirish" class="p-button-danger" @click="users.splice(index, 1)" />
+          </template>
+        </Column>
       </DataTable>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import { useStore } from 'vuex';
+import { ref, computed } from "vue";
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import { useStore } from "vuex";
 
 // Vuex do'konidan foydalanish
 const store = useStore();
 
 // Reactive inputlar
-const name = ref('');
-const email = ref('');
+const name = ref("");
+const email = ref("");
 const age = ref(null);
 const editingUser = ref(null); // Hozirgi tahrirlanayotgan foydalanuvchi
 
@@ -49,25 +48,25 @@ const users = computed(() => store.state.users);
 
 // Formani yuborish funksiyasi
 function clickSubmit() {
-  if (name.value === '' || email.value === '' || age.value === null) {
+  if (name.value === "" || email.value === "" || age.value === null) {
     alert("Barcha inputlarni to'ldiring");
   } else {
     const newUser = {
       id: editingUser.value ? editingUser.value.id : users.value.length + 1,
       name: name.value,
       email: email.value,
-      age: age.value
+      age: age.value,
     };
-    
+
     if (editingUser.value) {
-      store.dispatch('updateUser', newUser);
+      store.dispatch("updateUser", newUser);
       editingUser.value = null;
     } else {
-      store.dispatch('addUser', newUser);
+      store.dispatch("addUser", newUser);
     }
-    
-    name.value = '';
-    email.value = '';
+
+    name.value = "";
+    email.value = "";
     age.value = null;
   }
 }
@@ -81,9 +80,8 @@ function editUser(user) {
 }
 
 function removeUser(userId) {
-  store.dispatch('deleteUser', userId);
+  store.dispatch("deleteUser", userId);
 }
-
 </script>
 
 <style scoped>
