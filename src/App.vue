@@ -11,6 +11,12 @@
     <!-- Jadval bo'limi -->
     <div class="flex-1">
       <DataTable :value="users" class="w-full">
+        <template #header>
+          <div class="table-tilte">
+            <p>users</p>
+            <Button icon="pi pi-plus" label="qo'shish" @click="dialog_create_user = true"></Button>
+          </div>
+        </template>
         <Column field="id" header="ID" />
         <Column field="name" header="Ism" />
         <Column field="email" header="Email" />
@@ -23,6 +29,26 @@
         </Column>
       </DataTable>
     </div>
+
+    <Dialog v-model:visible="dialog_create_user" modal header="Edit Profile" :style="{ width: '25rem' }">
+      <span class="p-text-secondary block mb-5">Update your information.</span>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-6rem">Ismingiz</label>
+        <InputText v-model="form.name" placeholder="Ismingizni kiriting" />
+      </div>
+      <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Email</label>
+        <InputText type="email" v-model="form.email" placeholder="Emailingizni kiriting" />
+      </div>
+      <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Yoshingizni</label>
+        <InputNumber v-model="form.age" :min="1" :max="100" placeholder="Yoshingizni kiriting" />
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="dialog_create_user = false"></Button>
+        <Button type="button" label="Save" @click="addUser()"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -33,6 +59,7 @@ import Button from "primevue/button";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { useStore } from "vuex";
+import { Dialog, InputNumber } from "primevue";
 
 // Vuex do'konidan foydalanish
 const store = useStore();
@@ -41,7 +68,9 @@ const store = useStore();
 const name = ref("");
 const email = ref("");
 const age = ref(null);
+const form = ref({});
 const editingUser = ref(null); // Hozirgi tahrirlanayotgan foydalanuvchi
+const dialog_create_user = ref(false);
 
 // Vuex do'konidan foydalanuvchilarni olish
 const users = computed(() => store.state.users);
@@ -79,9 +108,16 @@ function editUser(user) {
   editingUser.value = user;
 }
 
-function removeUser(userId) {
-  store.dispatch("deleteUser", userId);
-}
+// function removeUser(userId) {
+//   store.dispatch("deleteUser", userId);
+// }
+const removeUser = (userId) => store.dispatch("deleteUser", userId);
+const addUser = () => {
+  console.log(form.value);
+  store.dispatch("addUser", form.value);
+  // o'zingiz oxiriga yetib qo'ying
+
+};
 </script>
 
 <style scoped>
@@ -104,5 +140,10 @@ function removeUser(userId) {
 }
 .w-full {
   width: 100%;
+}
+.table-tilte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
