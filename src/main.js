@@ -5,6 +5,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import store from './store';
 import 'primeicons/primeicons.css';
+import "primeflex/primeflex.css";
 import router from './router';
 
 const app = createApp(App);
